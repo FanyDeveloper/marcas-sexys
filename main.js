@@ -1,6 +1,14 @@
 // Preloader, marcas empilhadas com scroll travado e animações de entrada
 (function () {
 
+  // SMOOTH SCROLL (Lenis): rolagem suave, travada enquanto o preloader está na tela
+  var lenis = null;
+  if (window.Lenis) {
+    lenis = new Lenis({ duration: 1.2, smoothWheel: true, anchors: true });
+    lenis.stop();
+    (function raf(time) { lenis.raf(time); requestAnimationFrame(raf); })(performance.now());
+  }
+
   // PRELOADER: contador 0 → 100 que acompanha o carregamento, depois a cortina sobe
   var pre = document.querySelector('.preloader');
   if (pre) {
@@ -19,6 +27,7 @@
       if (shown < 1) return requestAnimationFrame(step);
       pre.classList.add('is-done');
       document.body.classList.remove('is-loading');
+      if (lenis) lenis.start();
       setTimeout(function () { pre.remove(); }, 1400);
     })(start);
   }
